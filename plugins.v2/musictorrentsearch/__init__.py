@@ -22,8 +22,8 @@ from app.core.event import eventmanager
 from app.core.metainfo import MetaInfo
 from app.db.models.user import User
 from app.db.site_oper import SiteOper
-from app.db.userauth import get_current_active_user
-from app.helper.sites import SitesHelper
+from app.db.user_oper import get_current_active_user
+# from app.helper.sites import SitesHelper
 from app.log import logger
 from app.plugins import _PluginBase
 from app.schemas.types import EventType, MediaType, NotificationType
@@ -42,7 +42,7 @@ class MusicTorrentSearch(_PluginBase):
     # 插件版本
     plugin_version = "1.9.1"
     # 插件作者
-    plugin_author = "Xiang"
+    plugin_author = "lishuwei115"
     # 作者主页
     author_url = "https://github.com/lishuwei115"
     # 插件配置项ID前缀
@@ -72,7 +72,7 @@ class MusicTorrentSearch(_PluginBase):
         logger.info(f"初始化插件：{self.plugin_name}")
         try:
             self.siteoper = SiteOper()
-            self.siteshelper = SitesHelper()
+            # self.siteshelper = SitesHelper()
         except Exception as e:
             logger.error(f"Failed to initialize SiteOper or SitesHelper: {e}")
             return
