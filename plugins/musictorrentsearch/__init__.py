@@ -32,7 +32,7 @@ from app.utils.string import StringUtils
 
 lock = Lock()
 
-class TorrentSearch(_PluginBase):
+class MusicTorrentSearch(_PluginBase):
     # 插件名称
     plugin_name = "搜索种子"
     # 插件描述
@@ -46,7 +46,7 @@ class TorrentSearch(_PluginBase):
     # 作者主页
     author_url = "https://github.com/xiangt920"
     # 插件配置项ID前缀
-    plugin_config_prefix = "torrentsearch_"
+    plugin_config_prefix = "musictorrentsearch_"
     # 加载顺序
     plugin_order = 30
     # 可使用的用户级别
@@ -640,13 +640,13 @@ class TorrentSearch(_PluginBase):
         # =xx.useToast(): grep -m 1 -o -E "=.{1,5}useToast\(\)"  /public/site.js|head -1
         # download: grep -m 1 -o -E "\{.{1,10};.{1,30}download.{200,280}\}\}"  /public/site.js|head -1
         # {oe();try{const A=await P.post("download/add",l);A.success?r.success(`${l==null?void 0:l.site_name} ${l==null?void 0:l.title} 添加下载成功！`):r.error(`${l==null?void 0:l.site_name} ${l==null?void 0:l.title} 添加下载失败：${A.message||"未知错误"}`)}catch(A){console.error(A)}re()}}
-        # code_import_api = TorrentSearch.exec_shell_command('grep -m 1 -o -E "import.{1,20}index4.js\\"" /public/site.js')
-        code_import_toast = TorrentSearch.exec_shell_command('grep -o -E "import\{[^;]+\}from\\"./index.js\\""  /public/site.js')
-        code_use_toast = TorrentSearch.exec_shell_command('grep -m 1 -o -E "=.{1,5}useToast\(\)"  /public/site.js|head -1')
-        code_post = TorrentSearch.exec_shell_command('grep -o -E -m 1 "await.{0,5}post"  /public/site.js |head -1')
-        code_progress = TorrentSearch.exec_shell_command('grep -m 1 -o -E "\{.{1,10};.{1,30}download.{200,280}\}\}"  /public/site.js|head -1')
-        code_progress_start = TorrentSearch.re_group1(self._pattern_progress_start, code_progress)
-        code_progress_end = TorrentSearch.re_group1(self._pattern_progress_end, code_progress)
+        # code_import_api = MusicTorrentSearch.exec_shell_command('grep -m 1 -o -E "import.{1,20}index4.js\\"" /public/site.js')
+        code_import_toast = MusicTorrentSearch.exec_shell_command('grep -o -E "import\{[^;]+\}from\\"./index.js\\""  /public/site.js')
+        code_use_toast = MusicTorrentSearch.exec_shell_command('grep -m 1 -o -E "=.{1,5}useToast\(\)"  /public/site.js|head -1')
+        code_post = MusicTorrentSearch.exec_shell_command('grep -o -E -m 1 "await.{0,5}post"  /public/site.js |head -1')
+        code_progress = MusicTorrentSearch.exec_shell_command('grep -m 1 -o -E "\{.{1,10};.{1,30}download.{200,280}\}\}"  /public/site.js|head -1')
+        code_progress_start = MusicTorrentSearch.re_group1(self._pattern_progress_start, code_progress)
+        code_progress_end = MusicTorrentSearch.re_group1(self._pattern_progress_end, code_progress)
         # # 拼装页面
         return [
             {
@@ -768,7 +768,7 @@ class TorrentSearch(_PluginBase):
                                 {code_progress_start};
                                 try {{
                                     
-                                    const torrentRs = {code_post}("plugin/TorrentSearch/download", torrent);
+                                    const torrentRs = {code_post}("plugin/MusicTorrentSearch/download", torrent);
                                     torrentRs.success ? downloadToast.success(`${{torrent == null ? void 0 : torrent.site_name}} ${{torrent == null ? void 0 : torrent.title}} 添加下载成功！`, {{duration: 5000}}) : downloadToast.error(`${{torrent == null ? void 0 : torrent.site_name}} ${{torrent == null ? void 0 : torrent.title}} 添加下载失败：${{torrentRs.message || "未知错误"}}`, {{duration: 5000}})
                                 }} catch (Exp) {{
                                     console.error(Exp);
