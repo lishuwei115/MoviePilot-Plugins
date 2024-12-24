@@ -40,11 +40,11 @@ class MusicTorrentSearch(_PluginBase):
     # 插件图标
     plugin_icon = "Searxng_A.png"
     # 插件版本
-    plugin_version = "1.9"
+    plugin_version = "1.9.1"
     # 插件作者
     plugin_author = "Xiang"
     # 作者主页
-    author_url = "https://github.com/xiangt920"
+    author_url = "https://github.com/lishuwei115"
     # 插件配置项ID前缀
     plugin_config_prefix = "musictorrentsearch_"
     # 加载顺序
@@ -69,15 +69,24 @@ class MusicTorrentSearch(_PluginBase):
     _download_path: str = ""
 
     def init_plugin(self, config: dict = None):
-        self.sites = SitesHelper()
-        self.siteoper = SiteOper()
+        logger.info(f"初始化插件：{self.plugin_name}")
+        try:
+            self.siteoper = SiteOper()
+            self.siteshelper = SitesHelper()
+        except Exception as e:
+            logger.error(f"Failed to initialize SiteOper or SitesHelper: {e}")
+            return
         # 停止现有任务
-        self.stop_service()
+        try:
+            self.stop_service()
+        except Exception as e:
+            logger.warning(f"Failed to stop existing service: {e}")
 
         # 配置
         if config:
-            self._enabled = config.get("enabled")
-            self._notify = config.get("notify")
+            logger.info(f"加载配置：{config}")
+            self._enabled = config.get("enabled", False)
+            self._notify = config.get("notify", False)
             self._search_key = config.get("search_key")
             self._download_path = config.get("download_path")
             self._search_sites = config.get("search_sites")
@@ -85,8 +94,11 @@ class MusicTorrentSearch(_PluginBase):
             # 过滤掉已删除的站点
             all_sites = [site.id for site in self.siteoper.list_order_by_pri()] + [site.get("id") for site in
                                                                                    self.__custom_sites()]
+            logger.info(f"所有站点：{all_sites}")
             self._search_sites = [site_id for site_id in all_sites if site_id in self._search_sites]
+            logger.info(f"搜索站点：{self._search_sites}")
             self.__update_config()
+            logger.info(f"插件配置：{self.get_config()}")
 
         if self._enabled and bool(self._search_key.strip(' \n\r\t')) :
             # 种子数据
@@ -193,6 +205,7 @@ class MusicTorrentSearch(_PluginBase):
         从站点搜索种子
         """
         if not self.sites.get_indexers():
+            logger.error("No indexers available")
             return
 
         logger.info("开始搜索站点种子 ...")
@@ -265,6 +278,14 @@ class MusicTorrentSearch(_PluginBase):
         return custom_sites
 
     def __update_config(self):
+        logger.info(f"更新插件配置")
+        if not isinstance(self._enabled, bool):
+            self._enabled = False
+        if not isinstance(self._search_sites, list):
+            self._search_sites = []
+        if not isinstance(self._search_key, str):
+            self._search_key = ""
+        logger.info(f"更新插件配置1")
         self.update_config({
             "enabled": self._enabled,
             "search_sites": self._search_sites,
