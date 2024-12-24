@@ -1,7 +1,7 @@
 {
     
     "MusicTorrentSearch": {
-        "name": "搜索音乐种子",
+        "name": "搜索音乐种子V2",
         "description": "直接搜索指定站点的种子",
         "version": "1.9", 
         "icon": "Searxng_A.png",
